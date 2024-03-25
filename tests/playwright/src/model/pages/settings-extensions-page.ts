@@ -28,6 +28,8 @@ export class SettingsExtensionsPage extends SettingsPage {
   readonly openshiftLocalBox: Locator;
   readonly extensionsTable: Locator;
   readonly imageInstallBox: Locator;
+  readonly imageInstallBoxInput: Locator;
+  readonly imageInstallBoxButton: Locator;
   readonly installedExtensions: Locator;
 
   constructor(page: Page) {
@@ -38,17 +40,15 @@ export class SettingsExtensionsPage extends SettingsPage {
     this.openshiftLocalBox = this.featuredExtensions.getByLabel('OpenShift Local');
     this.extensionsTable = page.getByRole('table');
     this.imageInstallBox = page.getByRole('region', { name: 'OCI image installation box' });
+    this.imageInstallBoxInput = this.imageInstallBox.getByRole('textbox', { name: 'OCI Image Name' });
+    this.imageInstallBoxButton = this.imageInstallBox.getByRole('button');
     this.installedExtensions = page.getByLabel('Installed Extensions');
   }
 
   public async installExtensionFromOCIImage(extension: string): Promise<SettingsExtensionsPage> {
-    const imageInput = this.imageInstallBox.getByLabel('OCI Image Name');
-    await imageInput.fill(extension);
-
-    const installButton = this.imageInstallBox.getByRole('button', { name: 'Install extension from the OCI image' });
-    await playExpect(installButton).toBeEnabled();
-
-    await installButton.click();
+    await this.imageInstallBoxInput.fill(extension);
+    await playExpect(this.imageInstallBoxButton).toBeEnabled();
+    await this.imageInstallBoxButton.click();
     await playExpect(this.imageInstallBox).toContainText('installation finished', { timeout: 30000 });
     return this;
   }
