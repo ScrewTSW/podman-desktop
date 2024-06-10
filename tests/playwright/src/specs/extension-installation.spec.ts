@@ -206,7 +206,7 @@ function initializeLocators(extensionType: string): void {
       extensionName = 'redhat-sandbox';
       extensionLabel = 'redhat.redhat-sandbox';
       resourceLabel = 'redhat.sandbox';
-      imageLink = 'ghcr.io/redhat-developer/podman-desktop-sandbox-ext:0.0.2';
+      imageLink = 'ghcr.io/redhat-developer/podman-desktop-sandbox-ext:0.0.3';
       break;
     }
     case 'Openshift Local': {
