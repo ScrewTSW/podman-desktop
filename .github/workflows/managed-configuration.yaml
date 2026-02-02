@@ -1,0 +1,108 @@
+name: Managed configuration tests
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  managed-configuration:
+    name: Managed configuration tests - ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: ${{ matrix.timeout }}
+    continue-on-error: ${{ matrix.optional == true }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            timeout: 10
+          - os: macos-15-intel
+            timeout: 10
+          - os: macos-15-arm64
+            timeout: 10
+            optional: true
+          - os: windows-2022
+            timeout: 10
+          - os: windows-2025
+            timeout: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061
+        with:
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238
+        with:
+          node-version: 24
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build (for E2E)
+        run: pnpm run test:e2e:build
+
+      # --- OS-specific administrative setup ---
+      - name: Linux managed configuration files
+        if: ${{ matrix.os == 'ubuntu-24.04' }}
+        run: |
+          echo "Managed configuration set-up for Linux"
+
+      - name: MacOS managed configuration files
+        if: ${{ startsWith(matrix.os, 'macos') }}
+        run: |
+          echo "Managed configuration set-up for macOS"
+
+      - name: Windows managed configuration files
+        if: ${{ startsWith(matrix.os, 'windows') }}
+        shell: pwsh
+        run: |
+          Write-Host "Managed configuration set-up for Windows"
+      # ========================================
+
+      - name: Run managed configuration spec
+        shell: bash
+        run: |
+          echo "Runner OS: $RUNNER_OS, matrix.os: ${{ matrix.os }}"
+          mkdir -p tests/playwright/output
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            pnpm run test:e2e:managed-configuration:run
+          elif [ "$RUNNER_OS" = "macOS" ]; then
+            pnpm run test:e2e:managed-configuration:run
+          elif [ "$RUNNER_OS" = "Windows" ]; then
+            pwsh -NoProfile -NonInteractive -Command "pnpm run test:e2e:managed-configuration:run"
+          else
+            echo "Unsupported RUNNER_OS: $RUNNER_OS"
+            exit 1
+          fi
+
+
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@74626db7353a25a20a72816467ebf035f674c5f8 # v6.2.0
+        if: always()
+        with:
+          fail_on_failure: true
+          include_passed: true
+          detailed_summary: true
+          annotate_only: true
+          require_tests: true
+          report_paths: '**/*results.xml'
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        if: always()
+        with:
+          name: managed-configuration-${{ matrix.os }}
+          path: |
+            ./tests/**/output/
+            !./tests/**/traces/raw
