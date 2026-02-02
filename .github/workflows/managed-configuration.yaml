@@ -1,0 +1,100 @@
+# Managed configuration tests
+# This workflow runs the managed-configuration Playwright test across a matrix of runners
+
+name: Managed configuration tests
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  managed-configuration:
+    name: Managed configuration tests - ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15-intel, macos-15-arm64, windows-2022, windows-2025]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061
+        with:
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238
+        with:
+          node-version: 24
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build (for E2E)
+        run: pnpm run test:e2e:build
+
+      # --- OS-specific administrative setup ---
+      # Linux: run as sudo, backup /etc/hosts and append a test entry, restore after tests
+      - name: Linux admin tasks (backup + modify /etc/hosts)
+        if: ${{ matrix.os == 'ubuntu-24.04' }}
+        run: |
+          echo "Managed configuration set-up for Linux"
+
+      # macOS: use sudo to adjust /etc/hosts; cleanup restores backup
+      - name: macOS admin tasks (backup + modify /etc/hosts)
+        if: ${{ startsWith(matrix.os, 'macos') }}
+        run: |
+          echo "Managed configuration set-up for macOS"
+
+      # Windows: backup and append to hosts using PowerShell; cleanup restores backup
+      - name: Windows admin tasks (backup + modify hosts)
+        if: ${{ startsWith(matrix.os, 'windows') }}
+        shell: pwsh
+        run: |
+          Write-Host "Managed configuration set-up for Windows"
+
+      - name: Run managed configuration spec
+        shell: bash
+        run: |
+          echo "Runner OS: $RUNNER_OS, matrix.os: ${{ matrix.os }}"
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            xvfb-maybe --auto-servernum --server-args='-screen 0 1280x960x24' -- npx playwright test tests/playwright/src/special-specs/managed-configuration/managed-configuration-combined.spec.ts --reporter=list
+          elif [ "$RUNNER_OS" = "macOS" ]; then
+            npx playwright test tests/playwright/src/special-specs/managed-configuration/managed-configuration-combined.spec.ts --reporter=list
+          elif [ "$RUNNER_OS" = "Windows" ]; then
+            # Use PowerShell on Windows to run the Playwright CLI
+            pwsh -NoProfile -NonInteractive -Command "npx playwright test tests/playwright/src/special-specs/managed-configuration/managed-configuration-combined.spec.ts --reporter=list"
+          else
+            echo "Unsupported RUNNER_OS: $RUNNER_OS"
+            exit 1
+          fi
+
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@74626db7353a25a20a72816467ebf035f674c5f8
+        if: always()
+        with:
+          fail_on_failure: true
+          include_passed: true
+          detailed_summary: true
+          annotate_only: true
+          require_tests: true
+          report_paths: '**/*results.xml'
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+        if: always()
+        with:
+          name: managed-configuration-${{ matrix.os }}
+          path: |
+            ./tests/**/output/
+            !./tests/**/traces/raw
