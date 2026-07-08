@@ -980,11 +980,23 @@ export class ImageRegistry {
     try {
       await got.get(registryUrl, options);
     } catch (requestErr) {
-      // diagnostic logging for insecure registry debugging
+      // diagnostic logging for insecure registry debugging — TEMPORARY
       if (requestErr instanceof Error) {
-        const e = requestErr as { code?: string; cause?: unknown };
+        const e = requestErr as { code?: string; cause?: unknown; options?: unknown };
+        const causeErr = e.cause instanceof Error ? (e.cause as { code?: string; cause?: unknown }) : undefined;
         console.error(
-          `[getAuthInfo] error class=${requestErr.constructor.name} message="${requestErr.message}" code="${e.code}" cause="${e.cause}" isHTTPError=${requestErr instanceof HTTPError} isRequestError=${requestErr instanceof RequestError}`,
+          `[getAuthInfo] RAW ERROR DUMP:\n` +
+            `  class=${requestErr.constructor.name}\n` +
+            `  message="${requestErr.message}"\n` +
+            `  code="${e.code}"\n` +
+            `  isHTTPError=${requestErr instanceof HTTPError}\n` +
+            `  isRequestError=${requestErr instanceof RequestError}\n` +
+            `  cause.class=${causeErr ? (e.cause as Error).constructor.name : 'N/A'}\n` +
+            `  cause.message="${causeErr ? (e.cause as Error).message : 'N/A'}"\n` +
+            `  cause.code="${causeErr?.code ?? 'N/A'}"\n` +
+            `  cause.cause="${causeErr?.cause instanceof Error ? causeErr.cause.message : String(causeErr?.cause ?? 'N/A')}"\n` +
+            `  ownKeys=${Object.keys(requestErr).join(',')}\n` +
+            `  thrown="${String(requestErr)}"`,
         );
       }
       if (requestErr instanceof HTTPError) {

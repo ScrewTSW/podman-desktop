@@ -71,7 +71,9 @@ test.afterAll(async ({ runner, page }) => {
 test.skip(!canTestInsecureRegistry(), 'Insecure registry tests are disabled (env vars not set)');
 
 test.describe
-  .serial('Push image to insecure registry with self-signed certificate', { tag: '@smoke' }, () => {
+  .serial('Push image to insecure registry with self-signed certificate', {
+    tag: ['@smoke', '@insecure-registry'],
+  }, () => {
     test('Add insecure registry', async ({ page }) => {
       await createRegistryAndVerify(page, registryUrl, registryUsername, registryPassword, registryUrl, true);
     });

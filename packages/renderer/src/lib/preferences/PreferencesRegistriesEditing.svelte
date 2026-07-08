@@ -193,10 +193,15 @@ async function loginToRegistry(registry: containerDesktopAPI.Registry): Promise<
   try {
     await window.checkImageCredentials($state.snapshot(registry));
   } catch (error) {
+    // TEMPORARY diagnostic logging — remove after fixing insecure registry tests
+    console.error(
+      `[loginToRegistry] checkImageCredentials error: isError=${error instanceof Error} message="${error instanceof Error ? error.message : String(error)}"`,
+    );
     if (
       error instanceof Error &&
       (error.message.includes('unable to verify the first certificate') ||
-        error.message.includes('self signed certificate in certificate chain'))
+        error.message.includes('self signed certificate in certificate chain') ||
+        error.message.includes('self-signed certificate'))
     ) {
       showNewRegistryForm = false;
       const result = await window.showMessageBox({
