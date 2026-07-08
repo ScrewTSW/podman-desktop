@@ -114,6 +114,29 @@ start_registry() {
     docker.io/library/registry:2
 
   echo "Registry started at localhost:${REGISTRY_PORT}"
+  wait_for_registry
+}
+
+wait_for_registry() {
+  local max_attempts=30
+  local attempt=0
+  echo "Waiting for registry to become reachable..."
+  while [ $attempt -lt $max_attempts ]; do
+    if curl -sk --max-time 2 "https://localhost:${REGISTRY_PORT}/v2/" >/dev/null 2>&1; then
+      echo "Registry is reachable at localhost:${REGISTRY_PORT}"
+      return 0
+    fi
+    attempt=$((attempt + 1))
+    sleep 1
+  done
+  echo "ERROR: Registry not reachable after ${max_attempts}s"
+  echo "Container status:"
+  podman ps -a --filter name="${REGISTRY_NAME}" --format "{{.Names}} {{.Status}} {{.Ports}}"
+  echo "Container logs:"
+  podman logs "${REGISTRY_NAME}" 2>&1 | tail -10
+  echo "Port binding:"
+  ss -tlnp | grep "${REGISTRY_PORT}" || echo "No listener on ${REGISTRY_PORT}"
+  return 1
 }
 
 registry_exists() {
