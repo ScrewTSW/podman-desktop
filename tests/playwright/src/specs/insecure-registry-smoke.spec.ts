@@ -16,6 +16,9 @@
  * SPDX-License-Identifier: Apache-2.0
  ***********************************************************************/
 
+import { execSync } from 'node:child_process';
+import https from 'node:https';
+
 import { TaskState } from '/@/model/core/states';
 import { CommandPalette } from '/@/model/pages/command-palette';
 import { ImagesPage } from '/@/model/pages/images-page';
@@ -43,11 +46,43 @@ let fullImageName: string;
 test.beforeAll(async ({ runner, welcomePage, page }) => {
   runner.setVideoAndTraceName('insecure-registry-e2e');
 
+  [registryUrl, registryUsername, registryPassword] = setupInsecureRegistry();
+
+  // TEMPORARY: diagnose registry reachability before Electron starts
+  console.log(`[insecure-registry] Pre-test registry check for ${registryUrl}`);
+  try {
+    const podmanPs = execSync(
+      '/usr/bin/podman ps --filter name=pd-test-registry --format "{{.Names}} {{.Status}} {{.Ports}}"',
+      { encoding: 'utf-8' },
+    );
+    console.log(`[insecure-registry] podman ps: ${podmanPs.trim() || '(no container found)'}`);
+    const ss = execSync(`/usr/bin/ss -tlnp | /usr/bin/grep 5443 || echo "(no listener on 5443)"`, {
+      encoding: 'utf-8',
+    });
+    console.log(`[insecure-registry] ss: ${ss.trim()}`);
+  } catch (e) {
+    console.log(`[insecure-registry] diagnostic commands failed: ${e instanceof Error ? e.message : e}`);
+  }
+
+  await new Promise<void>((resolve, reject) => {
+    const req = https.get(`https://${registryUrl}/v2/`, { rejectUnauthorized: false }, res => {
+      console.log(`[insecure-registry] HTTPS probe: ${res.statusCode}`);
+      res.resume();
+      resolve();
+    });
+    req.on('error', err => {
+      console.error(`[insecure-registry] HTTPS probe FAILED: ${err.message}`);
+      reject(new Error(`Registry ${registryUrl} unreachable from test process: ${err.message}`));
+    });
+    req.setTimeout(5000, () => {
+      req.destroy();
+      reject(new Error(`Registry ${registryUrl} probe timed out`));
+    });
+  });
+
   await welcomePage.handleWelcomePage(true);
   await waitForPodmanMachineStartup(page);
   await ensureNoImagesPresentCLI(page);
-
-  [registryUrl, registryUsername, registryPassword] = setupInsecureRegistry();
 });
 
 test.afterAll(async ({ runner, page }) => {
