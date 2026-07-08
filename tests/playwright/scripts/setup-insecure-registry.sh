@@ -102,10 +102,15 @@ generate_htpasswd() {
 }
 
 start_registry() {
+  # Use --network=host to bypass rootless podman's pasta port forwarding,
+  # which is unreliable in CI (ECONNREFUSED from Electron even though
+  # the container is running). The registry listens directly on the host
+  # network at REGISTRY_PORT.
   podman run -d \
     --name "${REGISTRY_NAME}" \
-    -p "${REGISTRY_PORT}:5000" \
+    --network=host \
     -v "${WORK_DIR}:/certs:Z" \
+    -e REGISTRY_HTTP_ADDR="0.0.0.0:${REGISTRY_PORT}" \
     -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/registry.crt \
     -e REGISTRY_HTTP_TLS_KEY=/certs/registry.key \
     -e REGISTRY_AUTH=htpasswd \
