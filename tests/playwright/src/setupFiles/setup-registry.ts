@@ -33,7 +33,10 @@ export function canTestRegistry(): boolean {
 }
 
 export function setupInsecureRegistry(): string[] {
-  const registryUrl = process.env.INSECURE_REGISTRY_URL ?? '';
+  const rawUrl = process.env.INSECURE_REGISTRY_URL ?? '';
+  // Replace localhost with 127.0.0.1 to avoid IPv6 resolution issues
+  // with rootless podman's pasta networking in CI
+  const registryUrl = rawUrl.replace(/^localhost(:|$)/, '127.0.0.1$1');
   const registryUsername = process.env.INSECURE_REGISTRY_USERNAME ?? '';
   const registryPswdSecret = process.env.INSECURE_REGISTRY_PASSWORD ?? '';
   return [registryUrl, registryUsername, registryPswdSecret];
