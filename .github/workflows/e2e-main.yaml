@@ -166,7 +166,7 @@ jobs:
           SKIP_KIND_INSTALL: 'true'
           KIND_PROVIDER_GHA: ${{ env.KIND_PROVIDER }}
           ELECTRON_ENABLE_INSPECT: true
-          INSECURE_REGISTRY_URL: 'localhost:5443'
+          INSECURE_REGISTRY_URL: '127.0.0.1:5443'
           INSECURE_REGISTRY_USERNAME: 'testuser'
           INSECURE_REGISTRY_PASSWORD: 'testpassword123'
         run: |
@@ -186,7 +186,7 @@ jobs:
           SKIP_KIND_INSTALL: 'true'
           KIND_PROVIDER_GHA: ${{ env.KIND_PROVIDER }}
           ELECTRON_ENABLE_INSPECT: true
-          INSECURE_REGISTRY_URL: 'localhost:5443'
+          INSECURE_REGISTRY_URL: '127.0.0.1:5443'
           INSECURE_REGISTRY_USERNAME: 'testuser'
           INSECURE_REGISTRY_PASSWORD: 'testpassword123'
         run: |
