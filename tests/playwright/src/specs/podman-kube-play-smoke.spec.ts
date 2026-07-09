@@ -21,7 +21,7 @@ import { fileURLToPath } from 'node:url';
 
 import { ImageState, PodState } from '/@/model/core/states';
 import { PodmanKubePlayOptions } from '/@/model/core/types';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import { deleteImage, deletePod } from '/@/utility/operations';
 import { isCI, isLinux } from '/@/utility/platform';
 import { waitForPodmanMachineStartup } from '/@/utility/wait';
@@ -54,6 +54,7 @@ test.skip(
 test.describe
   .serial('Podman Kube Play Yaml - Create Pod from Scratch', { tag: '@smoke' }, () => {
     test.beforeAll(async ({ runner, page, welcomePage }) => {
+      test.setTimeout(STARTUP_TIMEOUT);
       runner.setVideoAndTraceName('podman-kube-play-from-scratch-smoke');
       await welcomePage.handleWelcomePage(true);
       await waitForPodmanMachineStartup(page);
@@ -97,6 +98,7 @@ test.describe
 
     //restarting the app between suites due to issue: https://github.com/podman-desktop/podman-desktop/issues/14273
     test.beforeAll(async ({ runner, page, welcomePage }) => {
+      test.setTimeout(STARTUP_TIMEOUT);
       runner.setVideoAndTraceName('podman-kube-play-build-smoke');
       await welcomePage.handleWelcomePage(true);
       await waitForPodmanMachineStartup(page);

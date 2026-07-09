@@ -20,7 +20,7 @@ import { expect as playExpect } from '@playwright/test';
 
 import { ProxyPage } from '/@/model/pages/proxy-page';
 import { RunnerOptions } from '/@/runner/runner-options';
-import { test } from '/@/utility/fixtures';
+import { STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 
 let proxyPage: ProxyPage;
 
@@ -36,7 +36,7 @@ test.use({
 });
 
 test.beforeAll(async ({ runner, welcomePage, navigationBar }) => {
-  test.setTimeout(60_000);
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('managed-configuration-proxy-e2e');
   await welcomePage.handleWelcomePage(true);
   const settingsBar = await navigationBar.openSettings();

@@ -17,7 +17,7 @@
  ***********************************************************************/
 
 import { ContainerState } from '/@/model/core/states';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import { deleteContainer, deleteImage, deleteNetwork, isPodmanCliVersionAtLeast } from '/@/utility/operations';
 import { waitForPodmanMachineStartup } from '/@/utility/wait';
 
@@ -35,6 +35,7 @@ test.skip(
 test.describe
   .serial('Network smoke tests', { tag: ['@smoke'] }, () => {
     test.beforeAll(async ({ runner, welcomePage, page }) => {
+      test.setTimeout(STARTUP_TIMEOUT);
       runner.setVideoAndTraceName('network-smoke');
       await welcomePage.handleWelcomePage(true);
       await waitForPodmanMachineStartup(page);

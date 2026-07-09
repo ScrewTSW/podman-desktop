@@ -19,6 +19,7 @@
 import type { Locator, Page } from '@playwright/test';
 import test, { expect as playExpect } from '@playwright/test';
 
+import { NavigationBar } from '/@/model/workbench/navigation';
 import { waitWhile } from '/@/utility/wait';
 
 import { BasePage } from './base-page';
@@ -100,12 +101,18 @@ export class WelcomePage extends BasePage {
   async handleWelcomePage(skipIfNotPresent: boolean): Promise<void> {
     return test.step('Handle Welcome Page', async () => {
       if (skipIfNotPresent) {
+        // Wait for the app UI to render — either the welcome page or the main navigation.
+        // ARM64 cold-starts can take 60s+, so use a generous timeout and poll for any known element.
+        const appRendered = this.skipOnBoarding.or(NavigationBar.getNavigationLocator(this.page)).first();
         try {
-          await this.skipOnBoarding.waitFor({ state: 'visible' });
+          await appRendered.waitFor({ state: 'visible', timeout: 120_000 });
         } catch (err) {
           if ((err as Error).name !== 'TimeoutError') {
             throw err;
           }
+          return;
+        }
+        if (!(await this.skipOnBoarding.isVisible())) {
           return;
         }
       }

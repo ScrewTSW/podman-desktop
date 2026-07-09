@@ -19,7 +19,7 @@
 import { TaskState } from '/@/model/core/states';
 import { CommandPalette } from '/@/model/pages/command-palette';
 import { TasksPage } from '/@/model/pages/tasks-page';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import { isCI, isLinux, isWindows } from '/@/utility/platform';
 import { waitForPodmanMachineStartup } from '/@/utility/wait';
 
@@ -28,6 +28,7 @@ const SYNC_TIMEOUT = 180_000;
 const POLL_INTERVAL = 2_000;
 
 test.beforeAll(async ({ runner, welcomePage, page }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('certificate-sync-e2e');
   await welcomePage.handleWelcomePage(true);
   await waitForPodmanMachineStartup(page);

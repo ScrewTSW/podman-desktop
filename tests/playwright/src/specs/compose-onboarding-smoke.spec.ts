@@ -27,7 +27,7 @@ import { ResourceCliCardPage } from '/@/model/pages/resource-cli-card-page';
 import { ResourcesPage } from '/@/model/pages/resources-page';
 import { SettingsBar } from '/@/model/pages/settings-bar';
 import type { NavigationBar } from '/@/model/workbench/navigation';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import { isCI, isLinux } from '/@/utility/platform';
 
 const RESOURCE_NAME: string = 'Compose';
@@ -42,6 +42,7 @@ test.skip(!!skipComposeOnboardingTest, 'Skip test suite based on env. variable')
 test.skip(!!isCI && isLinux, 'Tests suite should not run on Linux platform');
 
 test.beforeAll(async ({ runner, welcomePage, page }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('compose-onboarding-e2e');
   await welcomePage.handleWelcomePage(true);
   cliToolsPage = new CLIToolsPage(page);

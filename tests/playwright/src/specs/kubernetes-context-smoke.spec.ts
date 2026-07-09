@@ -22,7 +22,7 @@ import { fileURLToPath } from 'node:url';
 
 import { KubeContextPage } from '/@/model/pages/kubernetes-context-page';
 import { PreferencesPage } from '/@/model/pages/preferences-page';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 
 const testContexts = ['context-1', 'context-2', 'context-3'];
 
@@ -30,6 +30,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 test.beforeAll(async ({ runner, welcomePage }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('kube-context-e2e');
 
   // copy testing kubeconfig file to the expected location

@@ -21,7 +21,7 @@ import { DockerCompatibilityPage } from '/@/model/pages/docker-compatibility-pag
 import { PodmanMachineDetails } from '/@/model/pages/podman-machine-details-page';
 import { ResourcesPage } from '/@/model/pages/resources-page';
 import { SettingsBar } from '/@/model/pages/settings-bar';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import {
   createPodmanMachineFromCLI,
   resetPodmanMachinesFromCLI,
@@ -33,6 +33,7 @@ import { waitForPodmanMachineStartup } from '/@/utility/wait';
 const defaultMachine = 'Podman Machine';
 
 test.beforeAll(async ({ runner, welcomePage, page }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('docker-compatibility-e2e');
 
   await welcomePage.handleWelcomePage(true);

@@ -24,7 +24,7 @@ import { PodmanMachinePrivileges, PodmanVirtualizationProviders } from '/@/model
 import { CreateMachinePage } from '/@/model/pages/create-machine-page';
 import { ResourceConnectionCardPage } from '/@/model/pages/resource-connection-card-page';
 import { ResourcesPage } from '/@/model/pages/resources-page';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import {
   createPodmanMachineFromCLI,
   deletePodmanMachine,
@@ -81,6 +81,7 @@ test.skip(
 );
 
 test.beforeAll(async ({ runner, welcomePage, page, navigationBar }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('podman-machine-resources-e2e');
 
   await welcomePage.handleWelcomePage(true);

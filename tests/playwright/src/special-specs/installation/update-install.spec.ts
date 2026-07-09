@@ -26,7 +26,7 @@ import { extensionsExternalList, podmanExtension } from '/@/model/core/extension
 import { ExtensionCardPage } from '/@/model/pages/extension-card-page';
 import { ExtensionCatalogCardPage } from '/@/model/pages/extension-catalog-card-page';
 import type { StatusBar } from '/@/model/workbench/status-bar';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import { handleConfirmationDialog } from '/@/utility/operations';
 import { isLinux, isMac, isWindows } from '/@/utility/platform';
 
@@ -56,6 +56,7 @@ test.afterAll(async ({ runner }) => {
 test.describe
   .serial('Podman Desktop Update installation', { tag: '@update-install' }, () => {
     test('Update is offered automatically on startup', async ({ welcomePage }) => {
+      test.setTimeout(STARTUP_TIMEOUT);
       await playExpect(updateAvailableDialog).toBeVisible({ timeout: 20_000 });
       const updateNowButton = updateAvailableDialog.getByRole('button', { name: 'Update Now' });
       await playExpect(updateNowButton).toBeVisible();

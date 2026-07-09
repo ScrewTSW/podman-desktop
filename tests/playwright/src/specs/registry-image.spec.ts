@@ -19,7 +19,7 @@
 import { RegistriesPage } from '/@/model/pages/registries-page';
 import { SettingsBar } from '/@/model/pages/settings-bar';
 import { canTestRegistry, setupRegistry } from '/@/setupFiles/setup-registry';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import { deleteImage, deleteRegistry } from '/@/utility/operations';
 import { waitForPodmanMachineStartup } from '/@/utility/wait';
 
@@ -31,6 +31,7 @@ let imageTag: string;
 let imageUrl: string;
 
 test.beforeAll(async ({ runner, welcomePage, page }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('registry-image-e2e');
 
   [registryUrl, registryUsername, registryPswdSecret] = setupRegistry();

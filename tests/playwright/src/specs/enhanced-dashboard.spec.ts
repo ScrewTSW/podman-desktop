@@ -20,7 +20,7 @@ import { ResourceElementActions } from '/@/model/core/operations';
 import { SystemOverviewState } from '/@/model/core/states';
 import { ResourceConnectionCardPage } from '/@/model/pages/resource-connection-card-page';
 import { ResourcesPage } from '/@/model/pages/resources-page';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import {
   createPodmanMachineFromCLI,
   deletePodmanMachine,
@@ -47,7 +47,7 @@ test.skip(
 );
 
 test.beforeAll(async ({ runner, welcomePage, page }) => {
-  test.setTimeout(TIMEOUT_SETUP);
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('enhanced-dashboard-e2e');
   await welcomePage.handleWelcomePage(true);
 

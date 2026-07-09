@@ -17,7 +17,7 @@
  ***********************************************************************/
 
 import { ResourceElementState } from '/@/model/core/states';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import { createPodmanMachineFromCLI, deletePodmanMachine, resetPodmanMachinesFromCLI } from '/@/utility/operations';
 import { isLinux } from '/@/utility/platform';
 import { waitForPodmanMachineStartup } from '/@/utility/wait';
@@ -30,7 +30,7 @@ test.skip(
 );
 
 test.beforeAll(async ({ runner, welcomePage, page }) => {
-  test.setTimeout(120_000);
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('podman-machine-dashboard');
   await welcomePage.handleWelcomePage(true);
 

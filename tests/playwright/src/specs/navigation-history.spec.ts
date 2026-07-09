@@ -16,7 +16,7 @@
  * SPDX-License-Identifier: Apache-2.0
  ***********************************************************************/
 
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import { deleteContainer } from '/@/utility/operations';
 import { isMac } from '/@/utility/platform';
 import { waitForPodmanMachineStartup } from '/@/utility/wait';
@@ -24,6 +24,7 @@ import { waitForPodmanMachineStartup } from '/@/utility/wait';
 const testContainerName = 'nav-history-test-container';
 
 test.beforeAll(async ({ runner, welcomePage, page }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('navigation-history-e2e');
   await welcomePage.handleWelcomePage(true);
   await waitForPodmanMachineStartup(page);

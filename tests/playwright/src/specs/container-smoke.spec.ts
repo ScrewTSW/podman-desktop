@@ -24,7 +24,7 @@ import { ContainerState, ImageState } from '/@/model/core/states';
 import type { ContainerInteractiveParams } from '/@/model/core/types';
 import { ContainersPage } from '/@/model/pages/containers-page';
 import { ImageDetailsPage } from '/@/model/pages/image-details-page';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import { deleteContainer, deleteImage } from '/@/utility/operations';
 import { waitForPodmanMachineStartup } from '/@/utility/wait';
 
@@ -36,8 +36,7 @@ const containerStartParamsInteractive: ContainerInteractiveParams = { attachTerm
 const containerStartParams: ContainerInteractiveParams = { attachTerminal: false };
 
 test.beforeAll(async ({ runner, welcomePage, page }) => {
-  test.setTimeout(180_000);
-
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('containers-e2e');
   await welcomePage.handleWelcomePage(true);
   await waitForPodmanMachineStartup(page);

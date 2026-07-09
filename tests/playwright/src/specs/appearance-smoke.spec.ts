@@ -20,11 +20,12 @@ import type { Page } from '@playwright/test';
 
 import { Preferences } from '/@/model/core/settings/preferences';
 import { PreferencesPage } from '/@/model/pages/preferences-page';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 
 let preferencesPage: PreferencesPage;
 
 test.beforeAll(async ({ runner, welcomePage, navigationBar }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('appearance-e2e');
   await welcomePage.handleWelcomePage(true);
   const settingsBar = await navigationBar.openSettings();

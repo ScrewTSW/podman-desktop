@@ -33,7 +33,7 @@ import {
   resourceConnectionAction,
   resourceConnectionActionDetails,
 } from '/@/utility/cluster-operations';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import { deployContainerToCluster } from '/@/utility/kubernetes';
 import { deleteContainer, deleteImage, ensureCliInstalled } from '/@/utility/operations';
 import { getVirtualizationProvider } from '/@/utility/provider';
@@ -79,6 +79,7 @@ const skipKindClusterLifecycleOnWsl =
 test.skip(!canRunKindTests(), `This test can't run on a windows rootless machine`);
 
 test.beforeAll(async ({ runner, page, welcomePage }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('kind-e2e');
   await welcomePage.handleWelcomePage(true);
   await waitForPodmanMachineStartup(page);

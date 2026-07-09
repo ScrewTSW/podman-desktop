@@ -20,7 +20,7 @@ import { TaskState } from '/@/model/core/states';
 import { CommandPalette } from '/@/model/pages/command-palette';
 import { ExperimentalPage } from '/@/model/pages/experimental-page';
 import { TasksPage } from '/@/model/pages/tasks-page';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import { waitForPodmanMachineStartup } from '/@/utility/wait';
 
 const longRunningTaskName = 'ghcr.io/podmandesktop-ci/long-task-example:v1.0';
@@ -28,6 +28,7 @@ const taskName = 'Dummy Long Task';
 const taskDisplayName = 'Doing something';
 
 test.beforeAll(async ({ runner, welcomePage, page }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('cancelable-task-e2e');
 
   await welcomePage.handleWelcomePage(true);

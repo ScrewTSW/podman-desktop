@@ -35,6 +35,7 @@ import { WelcomePage } from '/@/model/pages/welcome-page';
 import { NavigationBar } from '/@/model/workbench/navigation';
 import type { Runner } from '/@/runner/podman-desktop-runner';
 import { RunnerFactory } from '/@/runner/runner-factory';
+import { STARTUP_TIMEOUT } from '/@/utility/fixtures';
 import { isWindows } from '/@/utility/platform';
 
 let pdRunner: Runner;
@@ -91,6 +92,7 @@ for (const { extensionLabel, extensionFullLabel, extensionName, extensionFullNam
       test.skip(extensionName === openshiftDockerExtension.extensionName && !!isWindows); // Currently timing out in azure cicd https://github.com/podman-desktop/e2e/issues/396
 
       test.beforeAll(async () => {
+        test.setTimeout(STARTUP_TIMEOUT);
         await _startup(extensionLabel);
       });
       test.afterAll(async () => {
@@ -289,15 +291,15 @@ function initializeLocators(extensionName: string): void {
 }
 
 async function goToDashboard(): Promise<void> {
-  const navigationBar = page.getByRole('navigation', { name: 'AppNavigation' });
-  const dashboardLink = navigationBar.getByRole('link', { name: 'Dashboard' });
+  const navigationLocator = NavigationBar.getNavigationLocator(page);
+  const dashboardLink = navigationLocator.getByRole('link', { name: 'Dashboard', exact: true });
   await playExpect(dashboardLink).toBeVisible();
   await dashboardLink.click();
 }
 
 async function goToSettings(): Promise<SettingsBar> {
-  const navigationBar = page.getByRole('navigation', { name: 'AppNavigation' });
-  const settingsLink = navigationBar.getByRole('link', { name: 'Settings' });
+  const navigationLocator = NavigationBar.getNavigationLocator(page);
+  const settingsLink = navigationLocator.getByRole('link', { name: 'Settings', exact: true });
   await playExpect(settingsLink).toBeVisible();
   await settingsLink.click();
   return new SettingsBar(page);

@@ -21,7 +21,7 @@ import type { DashboardPage } from '/@/model/pages/dashboard-page';
 import type { ExtensionDetailsPage } from '/@/model/pages/extension-details-page';
 import type { SettingsBar } from '/@/model/pages/settings-bar';
 import { NavigationBar } from '/@/model/workbench/navigation';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 
 const extensionLabel = 'podman-desktop.podman';
 const extensionLabelName = 'podman';
@@ -33,6 +33,7 @@ let settingsBar: SettingsBar;
 let navigationBar: NavigationBar;
 
 test.beforeAll(async ({ runner, welcomePage, page }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('podman-extensions-e2e');
   await welcomePage.handleWelcomePage(true);
   navigationBar = new NavigationBar(page);

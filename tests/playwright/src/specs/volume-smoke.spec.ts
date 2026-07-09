@@ -19,7 +19,7 @@
 import { ContainerState, VolumeState } from '/@/model/core/states';
 import type { ContainerInteractiveParams } from '/@/model/core/types';
 import { ContainerDetailsPage } from '/@/model/pages/container-details-page';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import { deleteContainer, deleteImage, readFileInVolumeFromCLI } from '/@/utility/operations';
 import { waitForPodmanMachineStartup } from '/@/utility/wait';
 
@@ -37,6 +37,7 @@ const containerStartParams: ContainerInteractiveParams = {
 };
 
 test.beforeAll(async ({ runner, welcomePage, page }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('volume-e2e');
 
   await welcomePage.handleWelcomePage(true);

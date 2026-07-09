@@ -21,7 +21,7 @@ import type { Locator } from '@playwright/test';
 import { PreferencesPage } from '/@/model/pages/preferences-page';
 import { ResourceConnectionCardPage } from '/@/model/pages/resource-connection-card-page';
 import { ResourcesPage } from '/@/model/pages/resources-page';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 
 // Image is pulled onto the podman machine before the test execution
 const IMAGE = 'ghcr.io/podmandesktop-ci/alpine-remote';
@@ -29,6 +29,7 @@ const REMOTE_MACHINE = 'remote-machine';
 const PODMAN = 'podman';
 
 test.beforeAll(async ({ runner, welcomePage }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('podman-remote-e2e');
   await welcomePage.handleWelcomePage(true);
 });

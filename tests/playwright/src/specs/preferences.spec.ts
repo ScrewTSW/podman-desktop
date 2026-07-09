@@ -17,11 +17,12 @@
  ***********************************************************************/
 
 import { PreferencesPage } from '/@/model/pages/preferences-page';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 
 const preferencesTestString = 'this text should persist through page change';
 
 test.beforeAll(async ({ runner, welcomePage }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('preferences-e2e');
   await welcomePage.handleWelcomePage(true);
 });

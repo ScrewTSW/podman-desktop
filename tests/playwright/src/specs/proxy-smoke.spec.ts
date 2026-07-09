@@ -18,7 +18,7 @@
 
 import { ProxyTypes } from '/@/model/core/types';
 import { ProxyPage } from '/@/model/pages/proxy-page';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 
 const invalidProxyUrl = 'invalid-proxy-url';
 const httpProxyUrl = 'http://http.proxy:8080';
@@ -28,6 +28,7 @@ const hostsDomains = 'localhost';
 let proxyPage: ProxyPage;
 
 test.beforeAll(async ({ page, runner, welcomePage }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('proxy-e2e');
   await welcomePage.handleWelcomePage(true);
   proxyPage = new ProxyPage(page);

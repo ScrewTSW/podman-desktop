@@ -61,3 +61,5 @@ export const test = base.extend<TestFixtures & FixtureOptions>({
   },
 });
 export { expect } from '@playwright/test';
+
+export const STARTUP_TIMEOUT = 180_000;

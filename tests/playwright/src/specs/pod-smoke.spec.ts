@@ -21,7 +21,7 @@ import * as os from 'node:os';
 import { ContainerState, PodState } from '/@/model/core/states';
 import type { ContainerInteractiveParams } from '/@/model/core/types';
 import { PodsPage } from '/@/model/pages/pods-page';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import { deleteContainer, deleteImage, deletePod } from '/@/utility/operations';
 import { waitForPodmanMachineStartup, waitUntil, waitWhile } from '/@/utility/wait';
 
@@ -41,6 +41,7 @@ const containerStartParams: ContainerInteractiveParams = { attachTerminal: false
 let resetTestData = true;
 
 test.beforeAll(async ({ runner, welcomePage, page, navigationBar }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('pods-e2e');
   await welcomePage.handleWelcomePage(true);
   await waitForPodmanMachineStartup(page);

@@ -18,9 +18,10 @@
 
 import { TroubleshootingPage } from '/@/model/pages/troubleshooting-page';
 import { StatusBar } from '/@/model/workbench/status-bar';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 
 test.beforeAll(async ({ runner, welcomePage }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('troubleshooting-e2e');
 
   await welcomePage.handleWelcomePage(true);

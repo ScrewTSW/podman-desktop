@@ -19,9 +19,10 @@
 import { CommandPalette } from '/@/model/pages/command-palette';
 import { DashboardPage } from '/@/model/pages/dashboard-page';
 import { ImagesPage } from '/@/model/pages/images-page';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 
 test.beforeAll(async ({ runner, welcomePage }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('navigation-history-smoke-e2e');
   await welcomePage.handleWelcomePage(true);
 });

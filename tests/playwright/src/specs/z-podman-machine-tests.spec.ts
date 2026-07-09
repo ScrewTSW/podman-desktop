@@ -26,7 +26,7 @@ import { ResourceConnectionCardPage } from '/@/model/pages/resource-connection-c
 import { ResourceCreationPage } from '/@/model/pages/resource-creation-page';
 import { ResourcesPage } from '/@/model/pages/resources-page';
 import type { NavigationBar } from '/@/model/workbench/navigation';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import {
   createPodmanMachineFromCLI,
   deletePodmanMachine,
@@ -61,6 +61,7 @@ test.skip(
 );
 
 test.beforeAll(async ({ runner, welcomePage, page }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('podman-machine-tests');
   await welcomePage.handleWelcomePage(true);
   await waitForPodmanMachineStartup(page);

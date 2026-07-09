@@ -23,7 +23,7 @@ import { CLIToolsPage } from '/@/model/pages/cli-tools-page';
 import { ResourceCliCardPage } from '/@/model/pages/resource-cli-card-page';
 import { ResourcesPage } from '/@/model/pages/resources-page';
 import { SettingsBar } from '/@/model/pages/settings-bar';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import { deleteContainer, deleteImage, runComposeUpFromCLI } from '/@/utility/operations';
 import { isCI, isLinux, isMac } from '/@/utility/platform';
 import { waitForPodmanMachineStartup } from '/@/utility/wait';
@@ -39,6 +39,7 @@ const frontendImageName = 'ghcr.io/podmandesktop-ci/podify-demo-frontend';
 let cliToolsPage: CLIToolsPage;
 
 test.beforeAll(async ({ runner, welcomePage, page }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('podman-compose-e2e');
   await welcomePage.handleWelcomePage(true);
   await waitForPodmanMachineStartup(page);

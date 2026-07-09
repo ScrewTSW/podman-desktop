@@ -17,7 +17,7 @@
  ***********************************************************************/
 
 import { RunnerOptions } from '/@/runner/runner-options';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import { handleConfirmationDialog } from '/@/utility/operations';
 import { isCI, isLinux } from '/@/utility/platform';
 
@@ -56,6 +56,7 @@ test.afterAll(async ({ runner }) => {
 test.describe
   .serial('Application update reminder preferences set to Never', { tag: '@update-install' }, () => {
     test('No update on startup', async ({ page, welcomePage }) => {
+      test.setTimeout(STARTUP_TIMEOUT);
       test.skip(
         !isCI || process.env.GITHUB_ACTIONS !== 'true' || isLinux,
         'Only run on macOS and Windows in GitHub Actions',

@@ -24,7 +24,7 @@ import { fileURLToPath } from 'node:url';
 import { ArchitectureType } from '/@/model/core/platforms';
 import { ImageState } from '/@/model/core/states';
 import { ImageDetailsPage } from '/@/model/pages/image-details-page';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import { ensureNoImagesPresentCLI, untagImagesFromPodman } from '/@/utility/operations';
 import { waitForPodmanMachineStartup } from '/@/utility/wait';
 
@@ -37,6 +37,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 test.beforeAll(async ({ runner, welcomePage, page }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('pull-image-e2e');
 
   await welcomePage.handleWelcomePage(true);

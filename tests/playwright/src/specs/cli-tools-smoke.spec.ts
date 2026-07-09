@@ -19,7 +19,7 @@
 import { CLIToolsPage } from '/@/model/pages/cli-tools-page';
 import { ResourcesPage } from '/@/model/pages/resources-page';
 import type { SettingsBar } from '/@/model/pages/settings-bar';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import { isLinux, isMac } from '/@/utility/platform';
 import { waitForPodmanMachineStartup } from '/@/utility/wait';
 
@@ -37,6 +37,7 @@ const toolToProviderCard: Record<string, string> = {
 test.skip(!!isLinux || !!isMac, 'Tests suite should not run on Linux or Mac platform');
 
 test.beforeAll(async ({ runner, page, welcomePage }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('cli-tools-e2e');
   await welcomePage.handleWelcomePage(true);
   await waitForPodmanMachineStartup(page);

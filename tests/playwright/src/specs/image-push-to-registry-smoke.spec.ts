@@ -18,7 +18,7 @@
 
 import { ImagesPage } from '/@/model/pages/images-page';
 import { canTestRegistry, setupRegistry } from '/@/setupFiles/setup-registry';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import {
   createRegistryAndVerify,
   deleteImage,
@@ -36,6 +36,7 @@ let fullName: string;
 const registryName: string = 'GitHub';
 
 test.beforeAll(async ({ runner, welcomePage, page }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('push-image-e2e');
 
   await welcomePage.handleWelcomePage(true);

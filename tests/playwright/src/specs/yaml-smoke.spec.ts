@@ -21,7 +21,7 @@ import { fileURLToPath } from 'node:url';
 
 import { ImageState } from '/@/model/core/states';
 import { PodmanKubePlayOptions } from '/@/model/core/types';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import { deleteImage, deletePod } from '/@/utility/operations';
 import { waitForPodmanMachineStartup } from '/@/utility/wait';
 
@@ -34,6 +34,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 test.beforeAll(async ({ runner, welcomePage, page }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('play-yaml-e2e');
 
   await welcomePage.handleWelcomePage(true);

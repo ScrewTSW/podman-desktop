@@ -15,7 +15,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ***********************************************************************/
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import { waitForPodmanMachineStartup } from '/@/utility/wait';
 
 const numberOfObjects = Number(process.env.OBJECT_NUM) || 100;
@@ -24,6 +24,7 @@ console.log(`numberOfObjects => ${numberOfObjects}`);
 console.log(`baselineImageCount => ${baselineImageCount}`);
 
 test.beforeAll(async ({ runner, welcomePage, page }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('ui-stress-e2e');
   await welcomePage.handleWelcomePage(true);
   await waitForPodmanMachineStartup(page);

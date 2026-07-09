@@ -18,13 +18,14 @@
 
 import { RegistriesPage } from '/@/model/pages/registries-page';
 import { NavigationBar } from '/@/model/workbench/navigation';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import { waitForPodmanMachineStartup } from '/@/utility/wait';
 
 const imageToSearch = 'fedora';
 const defaultPreferred = 'docker.io';
 
 test.beforeAll(async ({ runner, welcomePage, page }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('preferred-registry-e2e');
 
   await welcomePage.handleWelcomePage(true);

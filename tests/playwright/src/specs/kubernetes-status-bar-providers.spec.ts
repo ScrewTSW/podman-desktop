@@ -25,7 +25,7 @@ import { ResourcesPage } from '/@/model/pages/resources-page';
 import { SettingsBar } from '/@/model/pages/settings-bar';
 import { canRunKindTests } from '/@/setupFiles/setup-kind';
 import { createKindCluster, deleteCluster } from '/@/utility/cluster-operations';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import {
   createPodmanMachineFromCLI,
   deletePodmanMachine,
@@ -49,6 +49,7 @@ const skipKindInstall = process.env.SKIP_KIND_INSTALL === 'true';
 const providerTypeGHA = process.env.KIND_PROVIDER_GHA ?? '';
 
 test.beforeAll(async ({ runner, welcomePage, page, navigationBar }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('status-bar-providers-e2e');
 
   await welcomePage.handleWelcomePage(true);

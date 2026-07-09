@@ -22,7 +22,7 @@ import { expect as playExpect } from '@playwright/test';
 import { Preferences } from '/@/model/core/settings/preferences';
 import { PreferencesPage } from '/@/model/pages/preferences-page';
 import { RunnerOptions } from '/@/runner/runner-options';
-import { test } from '/@/utility/fixtures';
+import { STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 
 let preferencesPage: PreferencesPage;
 
@@ -38,7 +38,7 @@ test.use({
 });
 
 test.beforeAll(async ({ runner, welcomePage, navigationBar }) => {
-  test.setTimeout(60_000);
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('managed-configuration-combined-e2e');
   await welcomePage.handleWelcomePage(true);
   const settingsBar = await navigationBar.openSettings();

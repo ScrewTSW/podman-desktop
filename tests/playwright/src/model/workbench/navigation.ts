@@ -29,6 +29,10 @@ import { SettingsBar } from '/@/model/pages/settings-bar';
 import { VolumesPage } from '/@/model/pages/volumes-page';
 
 export class NavigationBar {
+  static getNavigationLocator(page: Page): Locator {
+    return page.getByRole('navigation', { name: 'AppNavigation' });
+  }
+
   readonly page: Page;
   readonly navigationLocator: Locator;
   readonly imagesLink: Locator;
@@ -45,9 +49,7 @@ export class NavigationBar {
 
   constructor(page: Page) {
     this.page = page;
-    this.navigationLocator = this.page.getByRole('navigation', {
-      name: 'AppNavigation',
-    });
+    this.navigationLocator = NavigationBar.getNavigationLocator(this.page);
     this.imagesLink = this.navigationLocator.getByRole('link', { name: 'Images' });
     this.containersLink = this.navigationLocator.getByRole('link', { name: 'Containers' }).nth(0);
     this.podsLink = this.navigationLocator.getByRole('link', { name: 'Pods', exact: true }).nth(0);

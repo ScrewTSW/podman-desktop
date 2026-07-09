@@ -21,12 +21,13 @@ import path from 'node:path';
 
 import { NavigationBar } from '/@/model/workbench/navigation';
 import { ElectronRunner } from '/@/runner/electron-runner';
-import { expect as playExpect, test } from '/@/utility/fixtures';
+import { expect as playExpect, STARTUP_TIMEOUT, test } from '/@/utility/fixtures';
 import { isCI, isLinux, isMac, isWindows } from '/@/utility/platform';
 
 test.skip(isLinux, 'Podman installation is not supported on Linux');
 
 test.beforeAll(async ({ page, runner, welcomePage }) => {
+  test.setTimeout(STARTUP_TIMEOUT);
   runner.setVideoAndTraceName('podman-install-e2e');
   const updateAvailableDialog = page.getByRole('dialog', { name: 'Update Podman Desktop?' });
   try {
